@@ -11,9 +11,12 @@
  * @version - 1.0.0
  */
 
-require(dirname(__FILE__) . '/vendor/robrichards/xmlseclibs/src/XMLSecurityKey.php');
-require(dirname(__FILE__) . '/XMLSecurityDSig.php');
-require(dirname(__FILE__) . '/XMLSecEnc.php');
+//require(dirname(__FILE__) . '/vendor/robrichards/xmlseclibs/src/XMLSecurityKey.php');
+//require(dirname(__FILE__) . '/XMLSecurityDSig.php');
+//require(dirname(__FILE__) . '/XMLSecEnc.php');
+namespace webshop_integration;
+use DOMDocument;
+
 use RobRichards\XMLSecLibs\XMLSecurityDSig;
 use RobRichards\XMLSecLibs\XMLSecurityKey;
 use RobRichards\XMLSecLibs\XMLSecEnc;
