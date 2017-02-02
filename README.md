@@ -85,7 +85,7 @@
   //Если $key_path=null, то по умолчанию возьмет из папки: src/allpay_key/ иначе можно указать место где лежат ключи
   $key_path =  dirname(__FILE__).'/vendor/allpaykz/webshop_integration/tests';  // Тестовые ключи.
   //Инициализируем класс allpay.
-  $allpay = new allpay();
+  $allpay = new allpay($key_path);
   //********Обязательное поле для заполнения xml.********//
     //URL для возврата если все хорошо прошло. Обязательное для заполнения
     $allpay->set_success_url('http://www.shop_name.kz/success.html');
