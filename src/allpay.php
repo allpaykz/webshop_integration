@@ -1,4 +1,4 @@
-<?
+<?   namespace allpaykz\webshop_integration;
 /**
  * Класс для интеграции между интернет магазинами и платежной системой Allpay
  * 
@@ -11,33 +11,16 @@
  * @version - 1.0.0
  */
 
-//require(dirname(__FILE__) . '/vendor/robrichards/xmlseclibs/src/XMLSecurityKey.php');
-//require(dirname(__FILE__) . '/XMLSecurityDSig.php');
-//require(dirname(__FILE__) . '/XMLSecEnc.php');
-namespace webshop_integration;
+
 use DOMDocument;
 
 use RobRichards\XMLSecLibs\XMLSecurityDSig;
 use RobRichards\XMLSecLibs\XMLSecurityKey;
 use RobRichards\XMLSecLibs\XMLSecEnc;
+use Exception;
 
 
 class allpay{
-
-   /**
-   *  URL для возврата если все хорошо прошло
-   */
-    const SUCCESS_URL = 'http://www.shop_name.kz/success.html';
-
-    /**
-   *  URL для возврата если оплата не прошла.
-   */
-    const FAIL_URL = 'http://www.shop_name.kz/fail.html';
-
-    /**
-    * Идентификатор магазина в ПС. Выдается в момент заключения договора.
-    */
-    const MERCHANT_ID = '75551234569';
 
     /**
     * Название файла приватного ключа
@@ -160,6 +143,30 @@ class allpay{
     */
     private $_xlsDoc = '';
 
+    /**
+    * URL для возврата если все хорошо прошло   .
+    * @var string
+    */
+    private $_success_url = '';
+
+
+    /**
+    * URL для возврата если оплата не прошла.
+    * @var string
+    */
+    private $_fail_url = '';
+
+
+    /**
+    * Идентификатор магазина в ПС. Выдается в момент заключения договора.
+    * @var string
+    */
+    private $_merchant_id = '';
+
+
+
+
+
 
     /**
     * Прифекс для создание xml document (namespace).
@@ -183,8 +190,9 @@ class allpay{
 	* @param {string} amount - Общая сумма к оплате.
 	* @param {string} prefix Значение префикса для XML
     */
-    function __construct($key_path,$shop_name=null,$wallet=null,$invoice=null,$amount=null,$response_url=null,$prefix=null)
-    {
+     public function __construct($key_path=null,$shop_name=null,$wallet=null,$invoice=null,$amount=null,$response_url=null,$prefix=null)
+     {
+       if(is_null($key_path)){$key_path = dirname(__FILE__);}
        $this->set_key_path($key_path);
        $this->set_shop_name($shop_name);
        $this->set_invoice($invoice);
@@ -262,14 +270,32 @@ class allpay{
     */
    public function set_response_url($response_url){ $this->_response_url = $response_url; $this->set_additionals(); }
 
+    /**
+    * Задать URL для возврата если все хорошо прошло
+    */
+   public function set_success_url($success_url){ $this->_success_url = $success_url; $this->set_additionals(); }
+
+    /**
+    * Задать URL для возврата если оплата не прошла.
+    */
+   public function set_fail_url($fail_url){ $this->_fail_url = $fail_url; $this->set_additionals();}
+
+
+    /**
+    * Задать идентификатор магазина в ПС. Выдается в момент заключения договора.
+    */
+   public function set_merchant_id($merchant_id){ $this->_merchant_id = $merchant_id; }
+
+
+
    /**
     * Задаем дополнительные поля для создания xml
     */
    public function set_additionals()
    {
       $this->_additionals = array(
-          'SuccessLink' =>   self::SUCCESS_URL,
-          'FailureLink' =>   self::FAIL_URL,
+          'SuccessLink' =>   $this->_success_url,
+          'FailureLink' =>   $this->_fail_url,
           'ResponseURL' =>   $this->_response_url,
           'TimeoutInSeconds' => $this->_time_out,
           'AutoTransaction' => $this->_auto_transaction
@@ -282,7 +308,7 @@ class allpay{
    public function set_wallet($wallet_id)
    {
        $this->_merchant = array(
-            'MerchantID' =>   self::MERCHANT_ID,
+            'MerchantID' =>   $this->_merchant_id,
             'WalletID' =>     $wallet_id
       );
    }
@@ -333,6 +359,26 @@ class allpay{
     * Получить адрес на сервис куда будет высылаться ответ.
     */
    public function get_response_url(){ return $this->_response_url;}
+
+
+
+    /**
+    * Получить URL для возврата если все хорошо прошло
+    */
+   public function get_success_url($success_url){ return $this->_success_url; }
+
+    /**
+    * Получить URL для возврата если оплата не прошла.
+    */
+   public function get_fail_url($fail_url){ return $this->_fail_url;}
+
+
+    /**
+    * Получить идентификатор магазина в ПС. Выдается в момент заключения договора.
+    */
+   public function get_merchant_id($merchant_id){ return $this->_merchant_id; }
+
+
 
     /**
     * Создаем XML документ
@@ -499,8 +545,15 @@ class allpay{
      {
        if(!empty($this->_xmlDoc))
        {
-         return html_entity_decode($this->_xmlDoc->saveXML(), ENT_COMPAT | ENT_HTML401, "ISO-8859-1");
-       }
+          if (version_compare(PHP_VERSION, '5.4.0') >= 0)
+          {
+             return html_entity_decode($this->_xmlDoc->saveXML(), ENT_COMPAT | ENT_HTML401, "ISO-8859-1");
+          }
+          else
+          {
+             return html_entity_decode($this->_xmlDoc->saveXML(), ENT_COMPAT , "ISO-8859-1");
+          }
+        }
      }
 
      /**
@@ -510,7 +563,15 @@ class allpay{
      {
        if(!empty($this->_xmlDoc))
        {
-         return base64_encode(html_entity_decode($this->_xmlDoc->saveXML(), ENT_COMPAT | ENT_HTML401, "ISO-8859-1"));
+          if (version_compare(PHP_VERSION, '5.4.0') >= 0)
+          {
+             return base64_encode(html_entity_decode($this->_xmlDoc->saveXML(), ENT_COMPAT | ENT_HTML401, "ISO-8859-1"));
+          }
+          else
+          {
+             return base64_encode(html_entity_decode($this->_xmlDoc->saveXML(), ENT_COMPAT , "ISO-8859-1"));
+          }
+
        }
      }
 
