@@ -4,24 +4,6 @@
 
 ### Использование
 
-#### Отредактировать файл `class/allpay.class.php`
-```php
- /*
-  * URL для возврата если все хорошо прошло
-  */
-  const SUCCESS_URL = 'http://www.shop_name.kz/success.html';
-
- /*
-  * URL для возврата если оплата не прошла.
-  */
-  const FAIL_URL = 'http://www.shop_name.kz/fail.html';
-
- /*
-  * Идентификатор магазина в платежной системе. Выдается в момент заключения договора.
-  */
-  const MERCHANT_ID = '75551234569';
-```
-
 #### Для вызова сервиса используйте файл `request_allpay.php`
 
 Пример 1 вызова сервиса. Файл `request_allpay.php`:
