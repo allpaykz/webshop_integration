@@ -1,7 +1,5 @@
 # Демо сервисы на PHP
 
-Для работы с ПС Allpay нужно скопировать всю папку [Allpay PHP Demo](https://github.com/allpaykz/webshop-service-examples/tree/master/webshop-integration-php-demo). Скачать проект можно по [ссылке](https://github.com/allpaykz/webshop-service-examples/archive/master.zip) или склонировать весь репозиторий.
-
 Если получаете сообщение `Exception [ 500 ]: Failure Signing Data: - 1`, скорее всего нужно подключить библиотеку `extension=php_openssl.dll`. Её нужно закачивать отдельно, соответствующей вашей версии `PHP`.
 
 ### Использование
@@ -30,15 +28,17 @@
 ```php
 <?php
   header('Content-Type: text/html; charset=utf-8');
-  require ( dirname(__FILE__) . '/class/allpay.class.php');
+  require_once 'vendor/autoload.php';
+  use allpaykz\webshop_integration\allpay;
   //********Обязательное поле для __construct.********//
-    //Путь до приватных и публичных ключей + /allpay_key/privkey.pem
-    $key_path =  dirname(__FILE__);
-    //********Обязательное поле для заполнения xml.********//
+    //Путь до приватных и публичных ключей к папке allpay_key.
+    //Если $key_path=null, то по умолчанию возьмет из папки: src/allpay_key/ иначе можно указать место где лежат ключи
+     $key_path =  dirname(__FILE__).'/vendor/allpaykz/webshop_integration/tests';  // Тестовые ключи.
+  //********Обязательное поле для заполнения xml.********//
       //Название магазина, которое будет видеть Покупатель на странице подтверждения платежей. Обязательное для заполнения
       $shop_name = 'TOO NAME SHOP';
       //Идентификатор счета в ПС. На этот счет будут переводится деньги от Покупателя. Выдается в момент заключения договора. Обязательное для заполнения
-      $wallet =  '00013';
+      $wallet =  '25252';
       //Номер заказа, поле должно быть уникальным в базе данных магазина. Обязательное для заполнения
       $invoice = 'number_invoice';
       //Общая сумма к оплате. Обязательное для заполнения
@@ -46,8 +46,16 @@
     //********Конец: Обязательное поле для заполнения xml.********//
   //********Конец: Обязательное поле для __construct.********//
   //Инициализируем класс allpay.
-  $response_url = 'http://my.domain.kz/response_allpay.php';
-  $allpay = new allpay($key_path,$shop_name,$wallet,$invoice,$amount,$response_url);
+  $allpay = new allpay($key_path,$shop_name,$wallet,$invoice,$amount);
+  //URL для возврата если все хорошо прошло. Обязательное для заполнения
+  $allpay->set_success_url('http://www.shop_name.kz/success.html');
+  //URL для возврата если оплата не прошла. Обязательное для заполнения
+  $allpay->set_fail_url('http://www.shop_name.kz/fail.html');
+  //URL для завершения транзакции. Там где будет проверка на подлинность. Обязательное для заполнения
+  $allpay->set_response_url('http://www.shop_name.kz/response_allpay.php');
+  //Идентификатор магазина в платежной системе. Выдается в момент заключения договора. Обязательное для заполнения
+  $allpay->set_merchant_id('75551234569');
+   
   
   //********Составное поле, описывающее товары в корзине Покупателя.  Не обязательное для заполнения. Но в дальнейшем при оплате будет красиво отображаться для покупателя что он покупает.********//
     //Код товара
@@ -89,14 +97,22 @@
 ```php
 <?php
   header('Content-Type: text/html; charset=utf-8');
-  require ( dirname(__FILE__) . '/class/allpay.class.php');
-  //********Обязательное поле для __construct.********//
-    //Путь до приватных и публичных ключей + /allpay_key/privkey.pem
-    $key_path =  dirname(__FILE__);
-    //********Конец: Обязательное поле для __construct.********//
+  require_once 'vendor/autoload.php';
+  use allpaykz\webshop_integration\allpay;
+  //Путь до приватных и публичных ключей к папке allpay_key.
+  //Если $key_path=null, то по умолчанию возьмет из папки: src/allpay_key/ иначе можно указать место где лежат ключи
+  $key_path =  dirname(__FILE__).'/vendor/allpaykz/webshop_integration/tests';  // Тестовые ключи.
   //Инициализируем класс allpay.
-  $allpay = new allpay($key_path,$shop_name,$wallet,$invoice,$amount);
+  $allpay = new allpay();
   //********Обязательное поле для заполнения xml.********//
+    //URL для возврата если все хорошо прошло. Обязательное для заполнения
+    $allpay->set_success_url('http://www.shop_name.kz/success.html');
+    //URL для возврата если оплата не прошла. Обязательное для заполнения
+    $allpay->set_fail_url('http://www.shop_name.kz/fail.html');
+    //URL для завершения транзакции. Там где будет проверка на подлинность. Обязательное для заполнения
+    $allpay->set_response_url('http://www.shop_name.kz/response_allpay.php');
+    //Идентификатор магазина в платежной системе. Выдается в момент заключения договора. Обязательное для заполнения
+    $allpay->set_merchant_id('75551234569');
     //Название магазина, которое будет видеть Покупатель на странице подтверждения платежей. Обязательное для заполнения
     $allpay->set_shop_name('TOO NAME SHOP2');
     //Идентификатор счета в ПС. На этот счет будут переводится деньги от Покупателя. Выдается в момент заключения договора. Обязательное для заполнения
@@ -105,8 +121,6 @@
     $allpay->set_invoice('number_invoice2');
     //Общая сумма к оплате. Обязательное для заполнения
     $allpay->set_amount('5');
-    //Ссылка на сервис, принимающий ответ
-    $allpay->set_response_url('http://my.domain.kz/response_allpay.php');
   //********Конец: Обязательное поле для заполнения xml.********//
   //********Не обязательные поле для заполнения xml. Ставиться автоматически либо не создаются в xml файле.********//
     //Таймаут транзакции. Минимальное значение 600, максимальное 86400. Обязательное для заполнения
@@ -156,11 +170,11 @@
 ```php
 <?php 
   header('Content-Type: text/html; charset=utf-8');
-  require ( dirname(__FILE__) . '/class/allpay.class.php');
-  //********Обязательное поле для __construct.********//
-  //Путь до приватных и публичных ключей + /allpay_key/pubkey.pem
-  $key_path =  dirname(__FILE__); 
-  //********Конец: Обязательное поле для __construct.********//
+  require_once 'vendor/autoload.php';
+  use allpaykz\webshop_integration\allpay;
+  //Путь до приватных и публичных ключей к папке allpay_key.
+  //Если $key_path=null, то по умолчанию возьмет из папки: src/allpay_key/ иначе можно указать место где лежат ключи
+  $key_path =  dirname(__FILE__).'/vendor/allpaykz/webshop_integration/tests';  // Тестовые ключи.
   //Инициализируем класс allpay.
   $allpay = new allpay($key_path);
   // Делаем xml объект из POST запроса.
@@ -182,7 +196,7 @@
    $text =  $allpay->get_error_text(); //вывод сообщения об ошибке
   }
  //Сохраняем в файл для тестирования
- $open = fopen (dirname(__FILE__)."/text.txt","r+");
+ $open = fopen (dirname(__FILE__)."/text.txt","wr+");
  fwrite($open, $text);
  fclose($open);
 ?>
