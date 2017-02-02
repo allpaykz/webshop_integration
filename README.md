@@ -1,3 +1,5 @@
+# Если вы не используете Composer, [здесь есть](https://github.com/allpaykz/webshop-service-examples/tree/master/webshop-integration-php-demo) самостоятельный PHP проект 
+
 # Демо сервисы на PHP
 
 Если получаете сообщение `Exception [ 500 ]: Failure Signing Data: - 1`, скорее всего нужно подключить библиотеку `extension=php_openssl.dll`. Её нужно закачивать отдельно, соответствующей вашей версии `PHP`.
