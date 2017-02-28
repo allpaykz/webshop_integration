@@ -1,4 +1,5 @@
-<?   namespace allpaykz\webshop_integration;
+<?php
+namespace allpaykz\webshop_integration;
 /**
  * Класс для интеграции между интернет магазинами и платежной системой Allpay
  * 
