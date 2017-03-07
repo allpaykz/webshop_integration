@@ -71,7 +71,7 @@
   //Получить xml данные в base64 для вставки в форуму.
   $webshopRequest = $allpay->get_xml_base64();
   //Главный критерий отправки формы это method="post"  и enctype="application/x-www-form-urlencoded"
-  echo '<form enctype="application/x-www-form-urlencoded" method="post" action="http://test.all-pay.kz/mfs/WebShopPayment.xhtml" name="all-pay_'.time().'" id="all-pay_'.time().'">
+  echo '<form enctype="application/x-www-form-urlencoded" method="post" action="http://beta.allpay.kz/mfs/WebShopPayment.xhtml" name="all-pay_'.time().'" id="all-pay_'.time().'">
           <input type="hidden" id="webshopRequest" name="webshopRequest" value="'.$webshopRequest.'" />
           <input type="submit" value="SEND" />
         </form>';
@@ -142,7 +142,7 @@
   //Получить xml данные в base64 для вставки в форуму.
   $webshopRequest = $allpay->get_xml_base64();
   //Главный критерий отправки формы это method="post"  и enctype="application/x-www-form-urlencoded"
-  echo '<form enctype="application/x-www-form-urlencoded" method="post" action="http://test.all-pay.kz/mfs/WebShopPayment.xhtml" name="all-pay_'.time().'" id="all-pay_'.time().'">
+  echo '<form enctype="application/x-www-form-urlencoded" method="post" action="http://beta.allpay.kz/mfs/WebShopPayment.xhtml" name="all-pay_'.time().'" id="all-pay_'.time().'">
           <input type="hidden" id="webshopRequest" name="webshopRequest" value="'.$webshopRequest.'" />
           <input type="submit" value="SEND" />
         </form>';
