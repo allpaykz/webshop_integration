@@ -13,3 +13,11 @@
 #### Для получения ответа WebshopResponse.xml используйте файл [response_allpay.php](tests/response_allpay.php)
 
 После того как Покупатель оплатит Ваш заказ ПС Allpay высылает WebshopResponse.xml файл, принять XML-ку можно используя сервис [response_allpay.php](tests/response_allpay.php)
+
+#### Техническое описание
+
+[Здесь](https://github.com/allpaykz/documentation/tree/master/webshop-integration)
+
+### Доступ к тестовой системе
+
+Для тестирования сервисов можно подключится к тестовой инфраструктуре ПС Allpay. Запрос на получение доступа к тестовому серверу отправляйте на почту techsupport@allpay.kz
